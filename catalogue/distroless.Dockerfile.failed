@@ -1,0 +1,11 @@
+FROM python:3-slim AS build-env
+WORKDIR /app
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+FROM gcr.io/distroless/python3
+COPY --from=build-env /app /app
+COPY --from=build-env /packages /packages
+WORKDIR /app
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
