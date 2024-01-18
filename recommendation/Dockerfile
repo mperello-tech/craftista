@@ -1,4 +1,4 @@
-FROM golang:alpine as builder
+FROM golang:alpine AS builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
@@ -8,8 +8,8 @@ RUN go build -o app .
 FROM alpine:latest
 WORKDIR /app
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
+RUN addgroup -S appgroup && adduser -S nonroot -G appgroup
+USER nonroot
 
 COPY --from=builder /app/app .
 
